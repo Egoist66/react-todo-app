@@ -32,4 +32,31 @@ input[type='checkbox']{
 
 input {
     font-size: 16px;
+    outline: none;
+}
+
+.error {
+    border: 1px solid red;
+}
+
+.error-message {
+    color: red;
+}
+
+.active-filter {
+    background-color: aquamarine;
+}
+
+.task_delete {
+    color: red;
+    border: none;
+}
+
+.is-done {
+    opacity: 0.5;
+}
+
+.controls button {
+    border: none;
+    padding: 5px;
 }

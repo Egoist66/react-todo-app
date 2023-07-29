@@ -1,39 +1,59 @@
+import {TasksProps} from "./TodoList.tsx";
 
-type PropsType = {
+interface PropsType  {
     data: {
-        status?: boolean,
+        isDone?: boolean,
         name?: string,
         _id: string,
-        removeTask: (id: string) => void,
+        toDoListId: string,
+        tasks?: Array<TasksProps>,
+        removeTask: (id: string, toDoListId: string) => void,
+        changeStatus: (taskId: string, status : boolean, toDoListId: string) => void
 
     }
 
 }
 
+
+
 export function Task({data}: PropsType) {
 
-    const deleteTask = () => {
-        data.removeTask(data._id)
+    const deleteTask = () : void => {
+        data.removeTask(data._id, data.toDoListId)
+    }
+
+    const changeTaskStatus = () : void => {
+
+        data.changeStatus(data._id, !data.isDone, data.toDoListId)
+
     }
 
     return (
-        <li>
+       <>
 
-            <input
-                id={data._id.toString()}
-                className={'task_input'}
-                defaultChecked={data.status}
-                type="checkbox"
-            />
+           <li className={data.isDone ? 'is-done' : ''}>
 
-            <label
-                htmlFor={data._id.toString()}
-                className={'task_name'}>{data.name}
-            </label>
+               <input
+                   onChange={changeTaskStatus}
+                   id={data._id.toString()}
+                   className={'task_input'}
+                   checked={data.isDone}
+                   type="checkbox"
+               />
 
-            <button onClick={deleteTask} className={'task_delete'}>&times;
-            </button>
-        </li>
+               <label
+                   htmlFor={data._id.toString()}
+                   className={'task_name'}>{data.name}
+               </label>
+
+               <button onClick={deleteTask} className={'task_delete'}>&times;
+               </button>
+
+
+           </li>
+
+
+       </>
 
     )
 }
