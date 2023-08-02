@@ -1,59 +1,72 @@
 import {TasksProps} from "./TodoList.tsx";
+import Editable from "./Editable.tsx";
 
-interface PropsType  {
+interface PropsType {
     data: {
         isDone?: boolean,
-        name?: string,
+        name: string,
         _id: string,
         toDoListId: string,
         tasks?: Array<TasksProps>,
+        changeTaskTitle: (newValue: string, id: string) => void
         removeTask: (id: string, toDoListId: string) => void,
-        changeStatus: (taskId: string, status : boolean, toDoListId: string) => void
+        changeStatus: (taskId: string, status: boolean, toDoListId: string) => void
 
     }
 
 }
 
 
-
 export function Task({data}: PropsType) {
 
-    const deleteTask = () : void => {
-        data.removeTask(data._id, data.toDoListId)
+
+    const deleteTask = (): void => {
+        const confirmation = confirm('Do you really wish to remove a task?')
+        if (confirmation) {
+            data.removeTask(data._id, data.toDoListId)
+        }
     }
 
-    const changeTaskStatus = () : void => {
+    const changeTaskStatus = (): void => {
 
         data.changeStatus(data._id, !data.isDone, data.toDoListId)
 
     }
 
+    const changeTaskEdits = (newValue: string): void => {
+
+        data.changeTaskTitle(newValue, data._id)
+
+    }
+
+
     return (
-       <>
+        <>
 
-           <li className={data.isDone ? 'is-done' : ''}>
+            <li className={data.isDone ? 'is-done' : ''}>
 
-               <input
-                   onChange={changeTaskStatus}
-                   id={data._id.toString()}
-                   className={'task_input'}
-                   checked={data.isDone}
-                   type="checkbox"
-               />
+                <input
+                    onChange={changeTaskStatus}
+                    id={data._id}
+                    className={'task_input'}
+                    checked={data.isDone}
+                    type="checkbox"
+                />
 
-               <label
-                   htmlFor={data._id.toString()}
-                   className={'task_name'}>{data.name}
-               </label>
+                <label htmlFor={data._id} className={'task_name'}>
+                    <Editable
+                        onSaveEdits={changeTaskEdits}
+                        title={data.name}
+                    />
+                </label>
 
-               <button onClick={deleteTask} className={'task_delete'}>&times;
-               </button>
+                <button onClick={deleteTask} className={'task_delete'}>&times;
+                </button>
 
 
-           </li>
+            </li>
 
-
-       </>
+        </>
 
     )
 }

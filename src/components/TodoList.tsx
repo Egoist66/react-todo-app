@@ -1,6 +1,8 @@
-import {Task} from "./Task";
-import {ChangeEvent, KeyboardEvent, useState} from "react";
 import {FilterValuesType} from "./App.tsx";
+import AddTodoForm from "./AddTodoForm.tsx";
+import {Task} from "./Task.tsx";
+import TodoControls from "./TodoControls.tsx";
+import Editable from "./Editable.tsx";
 
 export type TasksProps = {
     id: string;
@@ -10,19 +12,21 @@ export type TasksProps = {
 
 type TodoListProps = {
     data: {
-        title?: string;
-        filter: FilterValuesType | string;
+        title: string;
+        filter: FilterValuesType;
         tasks?: Array<TasksProps>;
         removeTask: (id: string, toDoListId: string) => void;
         removeTodo: (toDoListId: string) => void;
         filterTask: (arg: FilterValuesType, todoListId: string) => void;
         addTask: (task: string, toDoListId: string) => void;
         changeStatus: (id: string, status: boolean, toDoListId: string) => void;
+        changeTodoTitle: (newValue: string, id: string) => void;
+        changeTaskTitle: (newValue: string, id: string, toDoListId: string) => void;
         todoListId: string
     };
 };
 
-type TodoListStateTypes = {
+export type TodoListStateTypes = {
     taskName: string;
     fieldError: boolean;
 
@@ -30,81 +34,44 @@ type TodoListStateTypes = {
 
 export function TodoList({data}: TodoListProps) {
 
-    const [state, setState] = useState<TodoListStateTypes>({
-        fieldError: false,
-        taskName: "",
-    });
 
-
-
-    const setFilterTask = (arg: FilterValuesType) => {
-        console.log(arg)
-        data.filterTask(arg, data.todoListId)
-    }
-
-    const addTaskInTodoListByEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-        setState({
-            ...state,
-            fieldError: false,
-        });
-
-        if (e.key === "Enter" || (e.ctrlKey && e.key === "Enter")) {
-            addTaskInTodoList();
-        }
-    };
-
-    const addTaskName = (e: ChangeEvent<HTMLInputElement>) => {
-        setState({
-            ...state,
-            taskName: e.currentTarget.value,
-        });
-    };
-
-    const addTaskInTodoList = () => {
-        if (state.taskName.trim() === "") {
-            setState({
-                ...state,
-                fieldError: true,
-            });
-            return;
-        }
-
-        data.addTask(state.taskName.trim(), data.todoListId);
-
-        setState({
-            ...state,
-            fieldError: false,
-            taskName: "",
-        });
-    };
 
     const removeTodoList = () => {
         const confirmation = confirm('Are you sure to remove Todo?')
-        if(confirmation){
+        if (confirmation) {
             data.removeTodo(data.todoListId)
         }
     }
 
+    const addTask = (task : string) => {
+        data.addTask(task, data.todoListId)
+    }
+
+    const changeTodoTitle = (newValue: string) => {
+        data.changeTodoTitle(newValue, data.todoListId)
+    }
+
+    const changeTaskEdits = (newValue: string, id : string): void => {
+
+        data.changeTaskTitle(newValue, id, data.todoListId)
+
+    }
+
+
     return (
         <div id={'todo'}>
-            <h3>{data.title} <button onClick={removeTodoList}>Remove Todolist</button></h3>
-            <div>
-                <input
-                    onKeyDown={addTaskInTodoListByEnter}
-                    value={state.taskName}
-                    onChange={addTaskName}
-                    className={state.fieldError ? "error" : ""}
-                    placeholder="Add task..."
-                    type="text"
-                />
+            <h3>
+                <Editable title={data.title} onSaveEdits={changeTodoTitle}  />
+                <button onClick={removeTodoList}>Remove Todolist</button>
+            </h3>
 
-                <button onClick={addTaskInTodoList}>+</button>
-                <div style={{marginTop: 10}}>
-                    {state.fieldError && (
-                        <span className={"error-message"}>Field is required!</span>
-                    )}
-                </div>
-            </div>
+            <AddTodoForm data={{
+                addItem: addTask,
+                btnText: '+',
+                placeHolder: 'Add a task...'
+
+            }}/>
+
             <ul>
                 {data.tasks?.map((task) => (
                     <Task
@@ -112,6 +79,7 @@ export function TodoList({data}: TodoListProps) {
                         data={{
                             toDoListId: data.todoListId,
                             changeStatus: data.changeStatus,
+                            changeTaskTitle: changeTaskEdits,
                             name: task.name,
                             tasks: data.tasks,
                             _id: task.id,
@@ -121,29 +89,12 @@ export function TodoList({data}: TodoListProps) {
                     />
                 ))}
             </ul>
-            <div className={'controls'}>
-                <button
-                    onClick={() => setFilterTask('all')}
-                    className={data.filter === "all" ? "active-filter" : ""}
 
-                >
-                    All
-                </button>
-                <button
-                    onClick={() => setFilterTask('active')}
-                    className={data.filter === "active" ? "active-filter" : ""}
-
-                >
-                    Active
-                </button>
-                <button
-                    onClick={() => setFilterTask('completed')}
-                    className={data.filter === "completed" ? "active-filter" : ""}
-                >
-                    Completed
-                </button>
-            </div>
-
+            <TodoControls data={{
+                todoListId: data.todoListId,
+                filter: data.filter,
+                filterTask: data.filterTask
+            }} />
 
         </div>
     );

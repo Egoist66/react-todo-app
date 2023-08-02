@@ -14,11 +14,11 @@ button {
 .App {
     display: flex;
     padding: 30px;
+    flex-wrap: wrap;
+    gap: 50px;
 }
 
-.App > div {
-    margin-right: 50px;
-}
+
 
 .task_delete {
     display: inline-block;
@@ -59,4 +59,11 @@ input {
 .controls button {
     border: none;
     padding: 5px;
+}
+
+@media(prefers-color-scheme: dark){
+    body,html {
+        background-color: #282828;
+        color: white;
+    }
 }
