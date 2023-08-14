@@ -1,5 +1,7 @@
 import {TasksProps} from "./TodoList.tsx";
 import Editable from "./Editable.tsx";
+import DeleteIcon from '@material-ui/icons/Delete';
+import {Checkbox, IconButton} from "@material-ui/core";
 
 interface PropsType {
     data: {
@@ -18,7 +20,6 @@ interface PropsType {
 
 
 export function Task({data}: PropsType) {
-
 
     const deleteTask = (): void => {
         const confirmation = confirm('Do you really wish to remove a task?')
@@ -45,13 +46,16 @@ export function Task({data}: PropsType) {
 
             <li className={data.isDone ? 'is-done' : ''}>
 
-                <input
+
+                <Checkbox
                     onChange={changeTaskStatus}
                     id={data._id}
                     className={'task_input'}
                     checked={data.isDone}
-                    type="checkbox"
+                    name="task-status"
+                    color="primary"
                 />
+
 
                 <label htmlFor={data._id} className={'task_name'}>
                     <Editable
@@ -60,8 +64,10 @@ export function Task({data}: PropsType) {
                     />
                 </label>
 
-                <button onClick={deleteTask} className={'task_delete'}>&times;
-                </button>
+                <IconButton onClick={deleteTask} aria-label="delete">
+                    <DeleteIcon />
+                </IconButton>
+
 
 
             </li>

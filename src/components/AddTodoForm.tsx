@@ -1,16 +1,17 @@
-import {ChangeEvent, KeyboardEvent, useState} from "react";
+import {ChangeEvent, KeyboardEvent, ReactNode, useState} from "react";
 import {TodoListStateTypes} from "./TodoList.tsx";
+import {Button, TextField} from "@material-ui/core";
 
 type AddTodoFormType = {
     data: {
         addItem: (title: string) => void,
         placeHolder: string,
-        btnText: string
+        btnText: string | ReactNode
 
     }
 }
 
-function AddTodoForm({data} : AddTodoFormType) {
+function AddTodoForm({data}: AddTodoFormType) {
 
     const [state, setState] = useState<TodoListStateTypes>({
         fieldError: false,
@@ -31,11 +32,11 @@ function AddTodoForm({data} : AddTodoFormType) {
         });
 
         if (e.key === "Enter" || (e.ctrlKey && e.key === "Enter")) {
-            addTaskInTodoList();
+            addTaskOrTodo();
         }
     };
 
-    const addTaskInTodoList = () => {
+    const addTaskOrTodo = () => {
         if (state.taskName.trim() === "") {
             setState({
                 ...state,
@@ -54,28 +55,33 @@ function AddTodoForm({data} : AddTodoFormType) {
     };
 
 
-
     return (
-        <div id={'todo-form'}>
+        <>
 
-            <input
-                onKeyDown={addTaskInTodoListByEnter}
-                value={state.taskName}
-                onChange={addTaskName}
-                className={state.fieldError ? "error" : ""}
-                placeholder={data.placeHolder}
-                type="text"
-            />
+            <div className={'todo-form'}>
 
-            <button onClick={addTaskInTodoList}>{data.btnText}</button>
-            <div style={{marginTop: 10}}>
-                {state.fieldError && (
-                    <span className={"error-message"}>The Field is required!</span>
-                )}
+                <TextField
+                    error={state.fieldError}
+                    onKeyDown={addTaskInTodoListByEnter}
+                    value={state.taskName}
+                    onChange={addTaskName}
+                    id="standard-basic"
+                    label={data.placeHolder}/>
+
+
+                <Button
+                    size={"small"}
+                    color={state.fieldError ? 'secondary' : 'primary'}
+                    variant={"contained"}
+                    onClick={addTaskOrTodo}>
+                    {state.fieldError ? 'The field is required!': data.btnText}
+                </Button>
+
             </div>
 
 
-        </div>
+
+        </>
     )
 }
 

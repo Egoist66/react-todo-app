@@ -1,4 +1,5 @@
 import {ChangeEvent, useState} from "react";
+import {TextField} from "@material-ui/core";
 
 type EditableProps = {
     title: string,
@@ -46,12 +47,15 @@ function Editable({title, onSaveEdits} : EditableProps){
 
     return (
         state.editMode
-            ? <input
+            ?   <TextField
                 autoFocus
                 onBlur={onBlurOffEditMode}
                 onChange={handleChangeTitle}
                 onDoubleClick={activateEditMode}
-                value={state.title} type="text"/>
+                value={state.title} type="text"
+                label="Edit title" />
+
+
 
             : <span onDoubleClick={activateEditMode}>{state.title}</span>
     )

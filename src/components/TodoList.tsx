@@ -3,6 +3,10 @@ import AddTodoForm from "./AddTodoForm.tsx";
 import {Task} from "./Task.tsx";
 import TodoControls from "./TodoControls.tsx";
 import Editable from "./Editable.tsx";
+import {Button} from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import {ControlPoint} from "@material-ui/icons";
+
 
 export type TasksProps = {
     id: string;
@@ -58,16 +62,26 @@ export function TodoList({data}: TodoListProps) {
     }
 
 
+
+
     return (
-        <div id={'todo'}>
-            <h3>
+        <div className={'todo'}>
+            <h3 className={'todo-title'}>
                 <Editable title={data.title} onSaveEdits={changeTodoTitle}  />
-                <button onClick={removeTodoList}>Remove Todolist</button>
+                <Button
+                    onClick={removeTodoList}
+                    size={"small"}
+                    variant="contained"
+                    color="primary"
+                    startIcon={<DeleteIcon />}
+                >
+                    Delete
+                </Button>
             </h3>
 
             <AddTodoForm data={{
                 addItem: addTask,
-                btnText: '+',
+                btnText: <ControlPoint />,
                 placeHolder: 'Add a task...'
 
             }}/>

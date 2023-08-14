@@ -1,15 +1,16 @@
 import {FilterValuesType} from "./App.tsx";
+import {Button} from "@material-ui/core";
 
 type TodoControlsTypes = {
     data: {
-        filterTask: (arg: FilterValuesType, todoListId : string) => void,
+        filterTask: (arg: FilterValuesType, todoListId: string) => void,
         filter: FilterValuesType,
         todoListId: string
 
     }
 }
 
-function TodoControls({data} : TodoControlsTypes) {
+function TodoControls({data}: TodoControlsTypes) {
 
 
     const setFilterTask = (arg: FilterValuesType) => {
@@ -20,31 +21,29 @@ function TodoControls({data} : TodoControlsTypes) {
 
     return (
         <div className={'controls'}>
-            <button
+            <Button
+                variant={data.filter === "all" ? "contained" : "text"}
                 onClick={() => setFilterTask('all')}
-                className={data.filter === "all" ? "active-filter" : ""}
-
             >
                 All
-            </button>
-            <button
+            </Button>
+            <Button
+                variant={data.filter === "active" ? "contained" : "text"}
+                color={'primary'}
                 onClick={() => setFilterTask('active')}
-                className={data.filter === "active" ? "active-filter" : ""}
-
             >
                 Active
-            </button>
-            <button
+            </Button>
+            <Button
+                variant={data.filter === "completed" ? "contained" : "text"}
+                color={'secondary'}
                 onClick={() => setFilterTask('completed')}
-                className={data.filter === "completed" ? "active-filter" : ""}
             >
                 Completed
-            </button>
+            </Button>
         </div>
     )
 }
-
-
 
 
 export default TodoControls
